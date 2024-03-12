@@ -212,8 +212,9 @@ impl Fs for RealFs {
 
     async fn load(&self, path: &Path) -> Result<String> {
         let mut file = smol::fs::File::open(path).await?;
-        let mut text = String::new();
-        file.read_to_string(&mut text).await?;
+        let mut buf = vec![];
+        file.read_to_end (&mut buf).await?;
+        let text: String = String::from_utf8_lossy(&buf).to_string();
         Ok(text)
     }
 
